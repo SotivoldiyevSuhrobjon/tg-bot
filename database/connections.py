@@ -15,7 +15,7 @@ async def get_add_tarif_name(user_id, name):
         Tariff.create(id=user_id, name=name)
 
 
-async def get_add_tariff_period(tariff, period, price):
+async def get_add_tariff_period(user_id, tariff, period, price):
     with db:
         TariffPeriod.create(id=user_id, tariff=tariff, period=period, price=price)
 

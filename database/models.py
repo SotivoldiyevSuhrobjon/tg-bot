@@ -26,7 +26,6 @@ class Tariff(BaseModel):
 
 
 class Profile(BaseModel):
-    # id = BigIntegerField(primary_key=True)
     user = ForeignKeyField(Users, on_delete='CASCADE', backref='profile')
     status = BooleanField(default=False)
     tariff = ForeignKeyField(Tariff, on_delete='CASCADE', null=True)
