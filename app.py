@@ -1,5 +1,6 @@
 from aiogram import executor
 
+from handlers.admins.admin_handler import admin_register_py
 from handlers.users.users import register_users_py
 from loader import dp
 import middlewares, filters, handlers
@@ -11,6 +12,7 @@ async def on_startup(dispatcher):
     # Устанавливаем дефолтные команды
     await set_default_commands(dispatcher)
     register_users_py(dispatcher)
+    admin_register_py(dispatcher)
     # Уведомляет про запуск
     # await on_startup_notify(dispatcher)
 
