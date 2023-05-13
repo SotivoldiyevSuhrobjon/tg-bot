@@ -1,16 +1,22 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+
+remove = ReplyKeyboardRemove()
 
 
 async def admin_add_rate_btn():
     btn = ReplyKeyboardMarkup(resize_keyboard=True)
-    btn.row("Tarif qoshish")
+    btn.row("Tarif qoshish", "Tarif ochirish")
     return btn
 
 
-async def rate_verify_btn():
-    btn = InlineKeyboardMarkup(row_width=1)
-    btn.add(
-        InlineKeyboardButton("Tasdiqlash", callback_data="rate:verify"),
-        InlineKeyboardButton("❌ Bekor qilish", callback_data="rate:delete")
-    )
+async def rate_and_price_btn():
+    btn = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    btn.row("Yana muddat kiritish", "Davom etish"),
+    btn.row("Bekor qilish"),
+    return btn
+
+
+async def cancel_btn():
+    btn = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    btn.row("Bekor qilish"),
     return btn

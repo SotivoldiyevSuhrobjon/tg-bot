@@ -26,7 +26,7 @@ class Tariff(BaseModel):
 
 
 class Profile(BaseModel):
-    user = ForeignKeyField(Users, on_delete='CASCADE', backref='profile')
+    user = ForeignKeyField(Users, on_delete='CASCADE')
     status = BooleanField(default=False)
     tariff = ForeignKeyField(Tariff, on_delete='CASCADE', null=True)
     start_period = DateTimeField(null=True)
@@ -37,8 +37,7 @@ class Profile(BaseModel):
 
 
 class TariffPeriod(BaseModel):
-    id = ForeignKeyField(Tariff, on_delete='CASCADE')
-    tariff = BigIntegerField()
+    tariff = ForeignKeyField(Tariff, on_delete='CASCADE', backref='tariffperiod')
     period = CharField()
     price = FloatField()
 
