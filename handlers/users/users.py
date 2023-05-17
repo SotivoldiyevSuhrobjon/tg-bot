@@ -104,12 +104,12 @@ async def click_choose_type_callback_handler(call: CallbackQuery, state: FSMCont
     else:
         raise ValueError('Invalid unit: {}'.format(unit))
     a = await state.get_data()
-    await get_profile_create(
-        user_id=user_id,
-        tariff_id=f"{about['tarif_name'][1]}",
-        start_period=now,
-        period=end_date
-    )
+    # await get_profile_create(
+    #     user_id=user_id,
+    #     tariff_id=f"{about['tarif_name'][1]}",
+    #     start_period=now,
+    #     period=end_date
+    # )
     await call.answer()
     btn = await inline_choose_payment()
     await call.message.edit_text(f"Tarif nomi: {about['tarif_name'][0]}\n\n"
