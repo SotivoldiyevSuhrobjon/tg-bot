@@ -1,8 +1,10 @@
+import types
 from datetime import datetime
 from pprint import pprint
 
 from aiogram import Dispatcher
 from aiogram.types import *
+from aiogram.types.message import ContentTypes, Message
 from aiogram.dispatcher import FSMContext
 
 from database.connections import *
@@ -11,6 +13,17 @@ from keyboards.inline.choose_keyboard import *
 from loader import dp
 from utils.misc.plan_tuple import *
 from states.AllStates import *
+
+
+# prices = [
+#     types.LabeledPrice(label='Working Time Machine', amount=5750),
+#     types.LabeledPrice(label='Gift wrapping', amount=500),
+# ]
+#
+# shipping_options = [
+#     types.ShippingOption(id='instant', title='WorldWide Teleporter').add(types.LabeledPrice('Teleporter', 1000)),
+#     types.ShippingOption(id='pickup', title='Local pickup').add(types.LabeledPrice('Pickup', 300)),
+# ]
 
 
 async def bot_start(msg: Message):
@@ -60,19 +73,22 @@ async def user_profile_handler(msg: Message):
                          f"❌ Status : <b>Ulanmagan</b>\n\n")
 
 
-async def add_plan_rate_handler(msg: Message):
+async def add_plan_rate_handler(msg: Message, state: FSMContext):
     tariflar = await get_rate_name()
-    # tariflar is select Tariff name
-    tariflar_name = await rate_tariff(tariflar)
-    # tariflar name name and id list tuple
-    # btn is tariflar name is id and name
-    btn = await choose_plan_menu_btn(tariflar_name)
-    await msg.answer(f"♻️Tarifni tanlang♻️", reply_markup=btn)
-    await Save_plan.tarif_name.set()
+    if tariflar:
+        # tariflar is select Tariff name
+        tariflar_name = await rate_tariff(tariflar)
+        # tariflar name name and id list tuple
+        # btn is tariflar name is id and name
+        btn = await choose_plan_menu_btn(tariflar_name)
+        await msg.answer(f"♻️Tarifni tanlang♻️", reply_markup=btn)
+        await Save_plan.tarif_name.set()
+    else:
+        await msg.answer("Tariflar qoshilmagan")
+        await state.finish()
 
 
 async def choose_plan_callback_handler(call: CallbackQuery, state: FSMContext):
-    # print(call.data)
     cal = call.data.split(":")
     id = cal[1]
     text = id.split("/")
@@ -112,7 +128,7 @@ async def click_choose_type_callback_handler(call: CallbackQuery, state: FSMCont
     # )
     await call.answer()
     btn = await inline_choose_payment()
-    await call.message.edit_text(f"Tarif nomi: {about['tarif_name'][0]}\n\n"
+    await call.message.edit_text(f"📝 Tarif nomi: {about['tarif_name'][0]}\n\n"
                                  f"🕐 Tarif muddati: {about['tarif_rate'][0]}/{about['tarif_rate'][1]}\n\n"
                                  f"💵 Tarif narxi:  {about['tarif_rate'][-1]}\n\n"
                                  f"🎉 Tarif boshlanish vaqti: {now}\n\n"
@@ -121,11 +137,26 @@ async def click_choose_type_callback_handler(call: CallbackQuery, state: FSMCont
     await state.finish()
 
 
+async def payment_answer_callback_choose_buy(call: CallbackQuery):
+    text = call.data.split(":")[-1]
+    if text == 'click':
+        keyboard = InlineKeyboardMarkup(row_width=1)
+        btn = InlineKeyboardButton(text="💵 Tolov qilish 💵", url='click.uz/')
+        keyboard.insert(btn)
+        await call.message.answer("✅ Tolov qilish uchun pastdagi tugmani bosing", reply_markup=keyboard)
+    if text == 'qiwi':
+        keyboard = InlineKeyboardMarkup(row_width=1)
+        btn = InlineKeyboardButton(text="💵 Tolov qilish 💵", url='qiwi.ru/')
+        keyboard.insert(btn)
+        await call.message.answer("✅ Tolov qilish uchun pastdagi tugmani bosing", reply_markup=keyboard)
+
+
 def register_users_py(dp: Dispatcher):
     dp.register_message_handler(bot_start, commands=['start'])
     dp.register_message_handler(user_profile_handler, regexp='👤 Profil')
     dp.register_message_handler(add_plan_rate_handler, regexp='➕ A`zo bolish')
 
+    dp.register_callback_query_handler(payment_answer_callback_choose_buy, text_contains='payment:')
     dp.register_callback_query_handler(click_choose_type_callback_handler, text_contains='tolov:',
                                        state=Save_plan.tarif_rate)
     dp.register_callback_query_handler(choose_plan_callback_handler, text_contains='plan:', state=Save_plan.tarif_name)

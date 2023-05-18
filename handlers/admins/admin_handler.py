@@ -56,7 +56,8 @@ async def choose_term_callback_handler(call: CallbackQuery, state: FSMContext):
     elif text == 'yil' and 'yil' not in s.keys():
         await state.update_data({'yil': []})
     btn = await cancel_btn()
-    await call.message.answer(f"🕐 Siz <b>{text}</b>  ni tanladingiz Iltimos muddatini kiriting raqamlarda", reply_markup=btn)
+    await call.message.answer(f"🕐 Siz <b>{text}</b>  ni tanladingiz Iltimos muddatini kiriting raqamlarda",
+                              reply_markup=btn)
     await Rate_state.muddat.set()
 
 
@@ -164,8 +165,9 @@ async def delete_user_callback(call: CallbackQuery):
     user_id = call.data.split(':')[-1]
     await delete_tariff_period(user_id)
     await call.answer(f"{user_id} deleted!")
-    await call.message.delete()
-    await delete_plan_handler(call.message)
+    tariff_period = await get_tariff_period_delete()
+    btn = await delete_rate_btn(tariff_period)
+    await call.message.edit_text("❌ Ochiriladigan tarifni tanlang", reply_markup=btn)
 
 
 def admin_register_py(dp: Dispatcher):

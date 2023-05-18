@@ -5,6 +5,7 @@ env = Env()
 env.read_env()
 
 BOT_TOKEN = env.str("BOT_TOKEN")  # Забираем значение типа str
+# PAYMENTS_PROVIDER_TOKEN = env.str("Payment token")  # Забираем значение типа str
 ADMINS = list(map(int, env.list("ADMINS")))  # Тут у нас будет список из админов
 # DB_NAME = env.str("DB_NAME")
 # DB_USER = env.str("DB_USER")
