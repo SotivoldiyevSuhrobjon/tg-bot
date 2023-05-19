@@ -131,8 +131,10 @@ async def click_choose_type_callback_handler(call: CallbackQuery, state: FSMCont
     await call.message.edit_text(f"📝 Tarif nomi: {about['tarif_name'][0]}\n\n"
                                  f"🕐 Tarif muddati: {about['tarif_rate'][0]}/{about['tarif_rate'][1]}\n\n"
                                  f"💵 Tarif narxi:  {about['tarif_rate'][-1]}\n\n"
-                                 f"🎉 Tarif boshlanish vaqti: {now}\n\n"
-                                 f"⚠️ Tarif tugash vaqti: {end_date}\n\n"
+                                 f"🎉 Tarif boshlanish vaqti: {now.strftime('%Y-%m-%d')} "
+                                 f" {now.strftime('%H:%M')}\n\n"
+                                 f"⚠️ Tarif tugash vaqti: {end_date.strftime('%Y-%m-%d')}  "
+                                 f" {now.strftime('%H:%M')}\n\n"
                                  f"💳 Tolov turini tanlang", reply_markup=btn)
     await state.finish()
 
